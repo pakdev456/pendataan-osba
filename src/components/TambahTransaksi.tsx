@@ -4,15 +4,15 @@ import { addTransaction, Transaction } from '../lib/api';
 import { formatCurrency } from '../utils/format';
 
 const categories = [
-  'kas rutin',
-  'kas jimpitan',
+  'kas bulanan',
+  'kas mendadak',
   'iuran kegiatan',
   'sumbangan',
   'belanja alat tulis',
   'belanja perlengkapan',
   'belanja konsumsi',
   'transportasi',
-  'kegiatan',
+  'kegiatan osba',
   'lainnya',
 ];
 
