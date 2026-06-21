@@ -3,7 +3,9 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey, Accept, Accept-Language",
+  "Access-Control-Allow-Credentials": "true",
+  "Access-Control-Max-Age": "86400",
 };
 
 const CREDENTIALS: Record<string, string> = {
