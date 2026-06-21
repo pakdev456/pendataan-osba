@@ -1,16 +1,10 @@
 // Konfigurasi CORS
-const getCorsHeaders = (origin: string) => {
-  const allowedOrigins = ["https://pendataan-osba.vercel.app", "http://localhost:5173"];
-  const isAllowed = allowedOrigins.includes(origin);
-
-  return {
-    "Access-Control-Allow-Origin": isAllowed ? origin : allowedOrigins[0],
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey, Accept, Accept-Language",
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Max-Age": "86400",
-  };
-};
+const getCorsHeaders = () => ({
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey, Accept, Accept-Language, Origin",
+  "Access-Control-Max-Age": "86400",
+});
 
 async function hashPassword(password: string): Promise<string> {
   const data = new TextEncoder().encode(password);
@@ -21,8 +15,7 @@ async function hashPassword(password: string): Promise<string> {
 }
 
 Deno.serve(async (req: Request) => {
-  const origin = req.headers.get('Origin') || '';
-  const corsHeaders = getCorsHeaders(origin);
+  const corsHeaders = getCorsHeaders();
 
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 200, headers: corsHeaders });
