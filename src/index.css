@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Page Animations ────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+
+/* ── Print Styles ───────────────────────────────────────── */
+@media print {
+  @page { size: landscape; margin: 1cm; }
+
+  body { background: white !important; font-size: 11pt; }
+
+  header, aside, button, .print\:hidden { display: none !important; }
+
+  main { margin-left: 0 !important; padding: 0 !important; }
+
+  #print-content {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  table { font-size: 10pt; page-break-inside: auto; }
+  tr    { page-break-inside: avoid; page-break-after: auto; }
+  thead { display: table-header-group; }
+  tfoot { display: table-footer-group; }
+}
+
+/* ── Scrollbar ──────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a1a1a1; }
+
+*:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer; opacity: 0.6;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
