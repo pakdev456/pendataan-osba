@@ -8,6 +8,7 @@ const getCorsHeaders = (origin: string) => ({
   "Vary": "Origin",
 });
 
+// Fungsi untuk hashing password menggunakan SHA-256
 async function hashPassword(password: string): Promise<string> {
   const data = new TextEncoder().encode(password);
   const digest = await crypto.subtle.digest("SHA-256", data);
@@ -20,6 +21,7 @@ Deno.serve(async (req: Request) => {
   const origin = req.headers.get('Origin') || '*';
   const corsHeaders = getCorsHeaders(origin);
 
+  // 1. Handle Preflight Request
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
@@ -36,6 +38,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
+    // 2. Login Endpoint
     if (url.pathname.endsWith('/login') && req.method === 'POST') {
       const { username, password } = await req.json();
 
@@ -46,6 +49,7 @@ Deno.serve(async (req: Request) => {
         });
       }
 
+      // Ambil user dari database
       const userResponse = await fetch(
         `${supabaseUrl}/rest/v1/users?username=eq.${encodeURIComponent(username)}&select=id,username,name,role,password_hash`,
         { headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}` } }
@@ -59,6 +63,7 @@ Deno.serve(async (req: Request) => {
         });
       }
 
+      // Verifikasi password (hashing)
       const user = users[0];
       const hashedPassword = await hashPassword(password);
       if (user.password_hash !== hashedPassword) {
@@ -68,8 +73,9 @@ Deno.serve(async (req: Request) => {
         });
       }
 
+      // Generate Session
       const token = crypto.randomUUID();
-      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 Hari
 
       await fetch(`${supabaseUrl}/rest/v1/sessions`, {
         method: 'POST',
@@ -82,12 +88,16 @@ Deno.serve(async (req: Request) => {
         body: JSON.stringify({ user_id: user.id, token, expires_at: expiresAt.toISOString() }),
       });
 
-      return new Response(JSON.stringify({ user: { id: user.id, username: user.username, name: user.name, role: user.role }, token }), {
+      return new Response(JSON.stringify({ 
+        user: { id: user.id, username: user.username, name: user.name, role: user.role }, 
+        token 
+      }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
+    // 3. Verify Endpoint
     if (url.pathname.endsWith('/verify') && req.method === 'POST') {
       const { token } = await req.json();
       const sessionResponse = await fetch(
@@ -109,6 +119,7 @@ Deno.serve(async (req: Request) => {
       });
     }
 
+    // 4. Logout Endpoint
     if (url.pathname.endsWith('/logout') && req.method === 'POST') {
       const { token } = await req.json();
       await fetch(`${supabaseUrl}/rest/v1/sessions?token=eq.${token}`, {
@@ -121,12 +132,13 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    return new Response(JSON.stringify({ error: 'Not found' }), {
+    return new Response(JSON.stringify({ error: 'Endpoint not found' }), {
       status: 404,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Server error' }), {
+    console.error("Server Error:", error);
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
