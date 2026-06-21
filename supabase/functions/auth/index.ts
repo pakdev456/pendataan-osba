@@ -1,9 +1,11 @@
 // Konfigurasi CORS
-const getCorsHeaders = () => ({
-  "Access-Control-Allow-Origin": "*",
+const getCorsHeaders = (origin: string) => ({
+  "Access-Control-Allow-Origin": origin || "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey, Accept, Accept-Language, Origin",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Client-Info, Apikey, Accept, Accept-Language, Origin, X-Requested-With, Access-Control-Request-Method, Access-Control-Request-Headers",
+  "Access-Control-Allow-Credentials": "true",
   "Access-Control-Max-Age": "86400",
+  "Vary": "Origin",
 });
 
 async function hashPassword(password: string): Promise<string> {
@@ -15,10 +17,11 @@ async function hashPassword(password: string): Promise<string> {
 }
 
 Deno.serve(async (req: Request) => {
-  const corsHeaders = getCorsHeaders();
+  const origin = req.headers.get('Origin') || '*';
+  const corsHeaders = getCorsHeaders(origin);
 
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 200, headers: corsHeaders });
+    return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   const url = new URL(req.url);
