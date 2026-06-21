@@ -36,10 +36,16 @@ export interface AuthResponse {
 }
 
 // Auth API
+const functionHeaders = {
+  'Content-Type': 'application/json',
+  apikey: supabaseAnonKey,
+  Authorization: `Bearer ${supabaseAnonKey}`,
+};
+
 export async function login(username: string, password: string): Promise<AuthResponse> {
   const response = await fetch(`${supabaseUrl}/functions/v1/auth/login`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: functionHeaders,
     body: JSON.stringify({ username, password }),
   });
 
@@ -54,7 +60,7 @@ export async function login(username: string, password: string): Promise<AuthRes
 export async function verifySession(token: string): Promise<{ valid: boolean; user?: User }> {
   const response = await fetch(`${supabaseUrl}/functions/v1/auth/verify`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: functionHeaders,
     body: JSON.stringify({ token }),
   });
 
@@ -64,7 +70,7 @@ export async function verifySession(token: string): Promise<{ valid: boolean; us
 export async function logout(token: string): Promise<void> {
   await fetch(`${supabaseUrl}/functions/v1/auth/logout`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: functionHeaders,
     body: JSON.stringify({ token }),
   });
 }
