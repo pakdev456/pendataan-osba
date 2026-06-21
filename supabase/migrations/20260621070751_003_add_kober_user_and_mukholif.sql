@@ -3,7 +3,7 @@ UPDATE users SET username = 'bendahara', name = 'Bendahara OSBA' WHERE username 
 
 -- Insert kober user
 INSERT INTO users (username, password_hash, name, role)
-VALUES ('kober', 'ibadah2026_hash', 'Pengawas Qism Ibadah', 'ibadah')
+VALUES ('kober', '8c95c2411a66a0445f837b7a26b20d353fbf52b689e57efa1fccfb3c4bd198a8', 'Pengawas Qism Ibadah', 'ibadah')
 ON CONFLICT (username) DO NOTHING;
 
 -- Create mukholif (pelanggaran ibadah) table

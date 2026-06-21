@@ -46,9 +46,8 @@ CREATE POLICY "allow_all_sessions" ON sessions FOR ALL USING (true);
 CREATE POLICY "allow_all_transactions" ON transactions FOR ALL USING (true);
 
 -- Insert default admin user
--- Password: babussalamsc26 (hashed with bcrypt)
 INSERT INTO users (username, password_hash, name, role)
-VALUES ('admin', '$2b$10$rXzN3WzqQHZ8hP5kY2XqLeXvJ8Z7TfGpDqMzB5xQYqRpZKQmVWz6G', 'Administrator', 'admin');
+VALUES ('admin', '67ee04502333ff33ff4ddad95ef5754be61cd36989e0ef277e6392ee38707abe', 'Administrator', 'admin');
 
 -- Create indexes for better query performance
 CREATE INDEX idx_transactions_date ON transactions(date);

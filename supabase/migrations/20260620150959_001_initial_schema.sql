@@ -47,7 +47,7 @@ CREATE POLICY "delete_own_transactions" ON transactions FOR DELETE
 
 -- Insert default admin user with hashed password
 INSERT INTO users (username, password, name, role)
-VALUES ('admin', '$2a$10$YourHashedPasswordHere', 'Administrator', 'admin');
+VALUES ('admin', '67ee04502333ff33ff4ddad95ef5754be61cd36989e0ef277e6392ee38707abe', 'Administrator', 'admin');
 
 -- Create index for better query performance
 CREATE INDEX idx_transactions_user_date ON transactions(user_id, date);
