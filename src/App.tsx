@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './lib/AuthContext';
 import { Login } from './components/Login';
 import { Layout } from './components/Layout';
 import { IbadahLayout } from './ibadah/IbadahLayout';
+import { QismLayout } from './qism/QismLayout';
+import { getQismConfig } from './qism/config';
 import { Toast, ToastData } from './components/Toast';
 import { OsbaLogo } from './components/MoonLoader';
 
@@ -26,6 +28,8 @@ function AppContent() {
     }
     prevUserRef.current = user ?? null;
   }, [user, loading, showToast]);
+
+  const qismConfig = user ? getQismConfig(user.role) : null;
 
   if (loading) {
     return (
@@ -53,6 +57,8 @@ function AppContent() {
         ? <Login onToast={showToast} />
         : user.role === 'ibadah'
         ? <IbadahLayout />
+        : qismConfig
+        ? <QismLayout config={qismConfig} />
         : <Layout />
       }
     </>

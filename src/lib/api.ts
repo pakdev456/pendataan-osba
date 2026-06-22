@@ -170,6 +170,78 @@ export async function deleteAllMukholif(): Promise<void> {
   if (error) throw error;
 }
 
+// Pelanggaran API (Qism Kebersihan, Bahasa, Keamanan)
+export interface Pelanggaran {
+  id: string;
+  nama: string;
+  kelas: string;
+  jenis: string;
+  catatan: string;
+  date: string;
+  created_at: string;
+}
+
+type PelanggaranTable = 'pelanggaran_kebersihan' | 'pelanggaran_bahasa' | 'pelanggaran_keamanan';
+
+async function getPelanggaran(table: PelanggaranTable): Promise<Pelanggaran[]> {
+  const { data, error } = await supabase
+    .from(table)
+    .select('*')
+    .order('date', { ascending: false });
+  if (error) throw error;
+  return data || [];
+}
+
+async function addPelanggaran(
+  table: PelanggaranTable,
+  m: Omit<Pelanggaran, 'id' | 'created_at'>,
+): Promise<Pelanggaran> {
+  const { data, error } = await supabase
+    .from(table)
+    .insert([m])
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
+async function deletePelanggaran(table: PelanggaranTable, id: string): Promise<void> {
+  const { error } = await supabase.from(table).delete().eq('id', id);
+  if (error) throw error;
+}
+
+async function deleteAllPelanggaran(table: PelanggaranTable): Promise<void> {
+  const { error } = await supabase
+    .from(table)
+    .delete()
+    .neq('id', '00000000-0000-0000-0000-000000000000');
+  if (error) throw error;
+}
+
+export const getPelanggaranKebersihan = () => getPelanggaran('pelanggaran_kebersihan');
+export const addPelanggaranKebersihan = (m: Omit<Pelanggaran, 'id' | 'created_at'>) =>
+  addPelanggaran('pelanggaran_kebersihan', m);
+export const deletePelanggaranKebersihan = (id: string) =>
+  deletePelanggaran('pelanggaran_kebersihan', id);
+export const deleteAllPelanggaranKebersihan = () =>
+  deleteAllPelanggaran('pelanggaran_kebersihan');
+
+export const getPelanggaranBahasa = () => getPelanggaran('pelanggaran_bahasa');
+export const addPelanggaranBahasa = (m: Omit<Pelanggaran, 'id' | 'created_at'>) =>
+  addPelanggaran('pelanggaran_bahasa', m);
+export const deletePelanggaranBahasa = (id: string) =>
+  deletePelanggaran('pelanggaran_bahasa', id);
+export const deleteAllPelanggaranBahasa = () =>
+  deleteAllPelanggaran('pelanggaran_bahasa');
+
+export const getPelanggaranKeamanan = () => getPelanggaran('pelanggaran_keamanan');
+export const addPelanggaranKeamanan = (m: Omit<Pelanggaran, 'id' | 'created_at'>) =>
+  addPelanggaran('pelanggaran_keamanan', m);
+export const deletePelanggaranKeamanan = (id: string) =>
+  deletePelanggaran('pelanggaran_keamanan', id);
+export const deleteAllPelanggaranKeamanan = () =>
+  deleteAllPelanggaran('pelanggaran_keamanan');
+
 export function calculateBalance(transactions: Transaction[]): number {
   return transactions.reduce((acc, t) => {
     if (t.type === 'debit') {
