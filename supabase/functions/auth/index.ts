@@ -113,7 +113,17 @@ Deno.serve(async (req: Request) => {
         });
       }
 
-      return new Response(JSON.stringify({ valid: true, user: sessions[0].users }), {
+      const rawUser = sessions[0].users;
+      const user = Array.isArray(rawUser) ? rawUser[0] : rawUser;
+
+      if (!user) {
+        return new Response(JSON.stringify({ valid: false }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      return new Response(JSON.stringify({ valid: true, user }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });

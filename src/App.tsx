@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { IbadahLayout } from './ibadah/IbadahLayout';
 import { QismLayout } from './qism/QismLayout';
 import { getQismConfig } from './qism/config';
+import { isIbadahRole } from './lib/user';
 import { Toast, ToastData } from './components/Toast';
 import { OsbaLogo } from './components/MoonLoader';
 
@@ -53,14 +54,15 @@ function AppContent() {
   return (
     <>
       <Toast toasts={toasts} onDismiss={dismissToast} />
-      {!user
-        ? <Login onToast={showToast} />
-        : user.role === 'ibadah'
-        ? <IbadahLayout />
-        : qismConfig
-        ? <QismLayout config={qismConfig} />
-        : <Layout />
-      }
+      {!user ? (
+        <Login onToast={showToast} />
+      ) : isIbadahRole(user.role) ? (
+        <IbadahLayout />
+      ) : qismConfig ? (
+        <QismLayout config={qismConfig} />
+      ) : (
+        <Layout />
+      )}
     </>
   );
 }

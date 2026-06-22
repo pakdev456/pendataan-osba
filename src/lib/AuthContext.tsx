@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { User, login as apiLogin, logout as apiLogout, verifySession } from './api';
+import { normalizeUser } from './user';
 
 interface AuthContextType {
   user: User | null;
@@ -21,8 +22,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (token) {
       verifySession(token)
         .then(result => {
-          if (result.valid && result.user) {
-            setUser(result.user);
+          const user = normalizeUser(result.user);
+          if (result.valid && user) {
+            setUser(user);
           } else {
             localStorage.removeItem(TOKEN_KEY);
           }
@@ -38,8 +40,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (username: string, password: string) => {
     const response = await apiLogin(username, password);
+    const user = normalizeUser(response.user);
+    if (!user) throw new Error('Data user tidak valid');
     localStorage.setItem(TOKEN_KEY, response.token);
-    setUser(response.user);
+    setUser(user);
   }, []);
 
   const logout = useCallback(async () => {

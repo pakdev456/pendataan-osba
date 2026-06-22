@@ -211,7 +211,7 @@ export function QismPendataan({ config }: Props) {
                     </button>
                   ))}
                 </div>
-                {jenisUtama === 'Lainnya' && (
+                {jenisUtama === 'Lainnya' && config.subLainnya && config.subLainnya.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-1">
                     {config.subLainnya.map(s => (
                       <button type="button" key={s}

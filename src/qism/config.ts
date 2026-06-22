@@ -32,7 +32,7 @@ export interface QismConfig {
   pengawasLabel: string;
   pdfFilename: string;
   jenisUtama: string[];
-  subLainnya: string[];
+  subLainnya?: string[];
   api: QismApi;
 }
 
@@ -47,10 +47,10 @@ export const QISM_CONFIGS: Record<string, QismConfig> = {
     laporanSubtitle: 'Cetak laporan pelanggaran kebersihan untuk pengawas',
     pengawasLabel: 'Pengawas Qism Kebersihan',
     pdfFilename: 'laporan-kebersihan-osba.pdf',
-    jenisUtama: ['Kamar Kotor', 'Lingkungan Kotor', 'Lainnya'],
+    jenisUtama: ['Pakaian jatuh/berantakan', 'Menaruh Barang sembarangan', 'Lainnya'],
     subLainnya: [
-      'Tidak Merapikan Kasur', 'Sampah Tidak Dibuang', 'Kamar Mandi Kotor',
-      'Pakaian Berantakan', 'Tidak Ikut Piket', 'Makan di Kamar',
+      'buang sampah sembarangan', 'Sampah Tidak Dibuang', 'Minum dari Keran Air Minum',
+      'Pakaian Berantakan', 'Barang Berserakan'
     ],
     api: {
       get: getPelanggaranKebersihan,
@@ -69,12 +69,7 @@ export const QISM_CONFIGS: Record<string, QismConfig> = {
     laporanSubtitle: 'Cetak laporan pelanggaran bahasa untuk pengawas',
     pengawasLabel: 'Pengawas Qism Bahasa',
     pdfFilename: 'laporan-bahasa-osba.pdf',
-    jenisUtama: ['Tidak Pakai Bahasa Arab', 'Berbicara Non-Arab', 'Lainnya'],
-    subLainnya: [
-      'Berbicara Indonesia di Area Wajib Arab', 'Tidak Menjawab dengan Arab',
-      'Menggunakan Bahasa Asing', 'Tidak Ikut Kegiatan Bahasa',
-      'Menghina Teman Berbahasa Arab', 'Tidak Hafal Kosakata',
-    ],
+    jenisUtama: ['Tidak Berbicara Bahasa Arab', ],
     api: {
       get: getPelanggaranBahasa,
       add: addPelanggaranBahasa,
@@ -92,11 +87,7 @@ export const QISM_CONFIGS: Record<string, QismConfig> = {
     laporanSubtitle: 'Cetak laporan pelanggaran keamanan untuk pengawas',
     pengawasLabel: 'Pengawas Qism Keamanan',
     pdfFilename: 'laporan-keamanan-osba.pdf',
-    jenisUtama: ['Keluar Tanpa Izin', 'Bertengkar', 'Lainnya'],
-    subLainnya: [
-      'Melawan Pengurus', 'Membawa Barang Terlarang', 'Merusak Fasilitas',
-      'Tidak Ikut Apel', 'Bolos Kegiatan', 'Mengganggu Ketertiban',
-    ],
+    jenisUtama: ['Telat', 'mengobrol'],
     api: {
       get: getPelanggaranKeamanan,
       add: addPelanggaranKeamanan,
@@ -107,5 +98,6 @@ export const QISM_CONFIGS: Record<string, QismConfig> = {
 };
 
 export function getQismConfig(role: string): QismConfig | null {
-  return QISM_CONFIGS[role] ?? null;
+  const normalized = role.trim().toLowerCase();
+  return QISM_CONFIGS[normalized] ?? null;
 }
